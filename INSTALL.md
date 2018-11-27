@@ -18,3 +18,37 @@
     images,containers,network,plugins,volumes，对其进行增删改查
     镜像是只读的
     
+二、安装docker基础
+
+1、配置yum
+    wget https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+    yum list docker-ce.x86_64  --showduplicates |sort -r
+    yum install -y --setopt=obsoletes=0 docker-ce-18.06.1.ce-3.el7
+2、启动docker
+    systemctl start docker
+    systemctl enable docker
+3、配置镜像加速
+    vim /etc/docker/daemon.json 
+    {
+       "registry-mirrors":["https://registry.docker-cn.com"]
+    }
+    systemctl restart docker
+4、docker命令解析
+    docker
+    Management Commands:
+      config      Manage Docker configs
+      container   Manage containers
+      image       Manage images
+      network     Manage networks
+      node        Manage Swarm nodes
+      plugin      Manage plugins
+      secret      Manage Docker secrets
+      service     Manage services
+      stack       Manage Docker stacks
+      swarm       Manage Swarm
+      system      Manage Docker
+      trust       Manage trust on Docker images
+      volume      Manage volumes
+    docker info
+    
+5、
