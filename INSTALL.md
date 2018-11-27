@@ -24,15 +24,18 @@
     wget https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
     yum list docker-ce.x86_64  --showduplicates |sort -r
     yum install -y --setopt=obsoletes=0 docker-ce-18.06.1.ce-3.el7
+    
 2、启动docker
     systemctl start docker
     systemctl enable docker
+    
 3、配置镜像加速
     vim /etc/docker/daemon.json 
     {
        "registry-mirrors":["https://registry.docker-cn.com"]
     }
     systemctl restart docker
+    
 4、docker命令解析
     docker
     Management Commands:
