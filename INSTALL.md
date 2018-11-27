@@ -8,5 +8,5 @@
 
 4、docker HOST与 registry使用https协议，client与docker HOST之间也是使用https、http协议（you can run your private registry）
 
-5、通常一个docker只放一个应用程序，通过应用程序名就是这个docker的镜像名。用仓库名和标签（tag）用来标识一个镜像
-
+5、通常一个docker只放一个应用程序，通过应用程序名就是这个docker的镜像名。用仓库名和标签（tag）用来标识一个镜像，eg:nginx:stable稳定版
+、nginx:latest最新版
