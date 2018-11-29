@@ -78,3 +78,14 @@
       3、docker login 
       4、docker push
 
+  8、备份还原
+      
+      1、备份
+      docker save -o myimage.tar mybusyos/bbos_http:v0.2 mybusyos/bbos_http:v0.1
+      
+      2、删除备份
+      docker rm CONTAINERS
+      docker rmi IMAGES
+      
+      3、恢复备份
+      docker load -i myimage.tar
