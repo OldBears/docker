@@ -69,4 +69,12 @@
       #docker ps      #查询正在运行的容器进程信息
       #docker inspect t2   #查询t2容器的运行信息，包括IP、网关、掩码、运行的程序参数，目录位置、container ID
 
+  7、阿里云镜像仓库
+      
+      1、阿里云镜像仓库
+          httpd://dev.aliyun.com
+      2、Docker Hub
+          https://hub.docker.com 
+      3、docker login 
+      4、docker push
 
