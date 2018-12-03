@@ -74,4 +74,8 @@
   
       存储卷容器，这个容器只需要启动就行，作为我们关联启动容器的环境设置。
       
+  	  #docker run --name v4 -it -v /data/:data1 busybox:latest /bin/sh
+			#docker run --name v5 -it --rm --volumes-from v4 busybox:latest
+			
+			
        
