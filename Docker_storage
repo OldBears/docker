@@ -1,0 +1,77 @@
+一、Docker 存储管理
+
+  1、Volumes type
+    
+       Bind mount type
+       a volume that points to a user-specified location on the host file system
+       
+       /my/bind/volume------>bind mount type ------>/some/specific/directory
+       
+       Docker-managed volume
+       the docker daemon creates managed volumes in a portion of the host's file system that's owned by Docker
+       
+       /managed/volume------>Docker-managed volume ------>Docker-managed volume /var/lib/docker/vfs/dir/<some volume ID>
+       
+  2、容器实战
+       
+    A、Docker管理的卷
+      
+       #docker run -it --name v2 -v /data1 busybox:latest /bin/sh
+       
+       #docker inspect v2
+           "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "c84f0b739c760dab1b13b74a66b7ee9e4fa1a9a1d7b0e6e434d02ea12bb3bd54",
+                "Source": "/var/lib/docker/volumes/c84f0b739c760dab1b13b74a66b7ee9e4fa1a9a1d7b0e6e434d02ea12bb3bd54/_data",
+                "Destination": "/data1",
+                "Driver": "local",
+                "Mode": "",
+                "RW": true,
+                "Propagation": ""
+            }
+        ]  
+      
+       #cd /var/lib/docker/volumes/c84f0b739c760dab1b13b74a66b7ee9e4fa1a9a1d7b0e6e434d02ea12bb3bd54/_data
+       #touch a b c 
+       
+       #docker exec -it v2 /bin/sh
+       #cd /data1 && ls -l 能够看到abc
+       
+   B、Bind管理的卷
+   
+      #docker run -it --name v3 -v /data:/data1 busybox:latest /bin/sh
+      #docker inspect v3
+         "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "/data",
+                "Destination": "/data1",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            }
+        ]
+      #
+   C、使用docker inspect -f 查询相关函数信息
+   
+       #docker inspect -f {{.NetworkSettings.IPAddress}} v3
+        172.17.0.3
+   
+   D、两个容器共用一个存储volume
+   
+       #docker run --name v4 -it -v /data:/data1 busybox:latest /bin/sh
+       #docker run --name v3 -it -v /data:/data1 busybox:latest /bin/sh
+       
+       #cd /data/
+        mkdir hostfile
+       
+       #docker exec -it v4 /bin/sh && cd /data1 && touch v4
+       
+       #ls 发现能够获取相关文件
+       
+  E、复制别人容器的volume
+  
+      存储卷容器，这个容器只需要启动就行，作为我们关联启动容器的环境设置。
+      
+       
