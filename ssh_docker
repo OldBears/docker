@@ -1,0 +1,96 @@
+主题：使用docker镜像添加SSH服务及其他
+一、docker镜像
+1、配置daocloud镜像加速器
+
+  curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://abcd1234.m.daocloud.io
+  该脚本可以将 --registry-mirror 加入到你的 Docker 配置文件中。
+  适用于 Ubuntu14.04、Debian、CentOS6 、CentOS7、Fedora、Arch Linux、openSUSE Leap 42.1，其他版本可能有细微不同。
+
+2、下载centos镜像
+
+  #docker pull centos
+  
+3、运行一个docker镜像
+
+
+二、编辑镜像
+
+1、安装相关软件
+  #yum install -y net-tools
+  #yum -y install openssh-server
+  #yum -y install openssh-clients
+  #yum -y install man
+  
+2、修改配置文件
+  #vi /etc/ssh/sshd_config
+  PermitRootLogin yes
+  
+3、运行openssh
+
+  #mkdir -p /var/run/sshd 创建pid目录
+  #/usr/sbin/sshd -D &  运行ssh服务
+  
+  注意：
+  在执行以上开启服务命令时会报以下错误：
+  [root@myssh ~]# /usr/sbin/sshd
+  Could not load host key: /etc/ssh/ssh_host_rsa_key
+  Could not load host key: /etc/ssh/ssh_host_ecdsa_key
+  Could not load host key: /etc/ssh/ssh_host_ed25519_key
+  sshd: no hostkeys available -- exiting.
+
+  解决方式：
+  ssh-keygen -t rsa -b 2048 -f /etc/ssh/ssh_host_rsa_key
+  ssh-keygen -t dsa -b 1024 -f /etc/ssh/ssh_host_dsa_key
+  ssh-keygen -t ecdsa -b 521 -f /etc/ssh/ssh_host_ecdsa_key
+
+  重新运行sshd服务
+  #/usr/sbin/sshd -D &  运行ssh服务
+
+4、查询ssh端口运行情况
+  #netstat -anpt
+  Active Internet connections (servers and established)
+  Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+  tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      208/sshd            
+  tcp6       0      0 :::22                   :::*                    LISTEN      208/sshd 
+
+5、修改主机密码
+  #passwd root
+
+6、客户端验收
+  #ssh 172.17.0.2
+  
+三、保存镜像
+
+1、制作ssh启动脚本
+  #vi /run.sh
+  #!/bin/bash
+  /usr/sbin/sshd -D
+  #chmod +x run.sh
+  
+2、退出exit
+
+3、保存镜像
+
+  #docker commit myos sshd:centos
+  
+4、查看保存的镜像
+  #docker images
+  REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+  sshd                centos              050b829b15ba        6 minutes ago       296MB
+  alpine              latest              cdf98d1859c1        2 weeks ago         5.53MB
+  busybox             latest              af2f74c517aa        3 weeks ago         1.2MB
+  centos              latest              9f38484d220f        5 weeks ago         202MB
+
+四、使用镜像 
+
+1、使用镜像
+
+  #docker run -p 10022:22 -d --name mysshos --hostname mysshos sshd:centos /run.sh
+  7948933e8f88f8b617a75b8bb605681a503fdcef7c0be204ba9f33c45879a52e
+  
+  #docker ps 
+  CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                   NAMES
+  7948933e8f88        sshd:centos         "/run.sh"           42 seconds ago      Up 39 seconds       0.0.0.0:10022->22/tcp   mysshos
+  
+2、客户端测试
+  #ssh 192.168.30.15
