@@ -11,7 +11,8 @@
   #docker pull centos
   
 3、运行一个docker镜像
-
+  
+  #docker run -it --name myos --hostname myos centos /bin/bash
 
 二、编辑镜像
 
